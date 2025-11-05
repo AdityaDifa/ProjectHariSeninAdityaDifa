@@ -1,0 +1,90 @@
+[
+  {
+    "title": "Big 4 Auditor Financial Analyst",
+    "desc": "Mulai transformasi dengan instruktur profesional, harga yang terjangkau, dan kurikulum terbaik",
+    "mentorName": "Jenna Ortega",
+    "mentorJob": "Senior Accountant",
+    "jobPlace": "Gojek",
+    "rating": 3.5,
+    "voters": 86,
+    "price": 300000,
+    "category": "Bisnis"
+  },
+  {
+    "title": "Digital Marketing Strategy for Beginners",
+    "desc": "Pelajari strategi pemasaran digital dari konsep dasar hingga praktik terbaik di dunia nyata.",
+    "mentorName": "Raisa Andini",
+    "mentorJob": "Digital Marketing Specialist",
+    "jobPlace": "Tokopedia",
+    "rating": 4.7,
+    "voters": 220,
+    "price": 250000,
+    "category": "Pemasaran"
+  },
+  {
+    "title": "UI/UX Design Essentials",
+    "desc": "Kuasai prinsip desain antarmuka dan pengalaman pengguna untuk membuat produk digital yang menarik.",
+    "mentorName": "Kevin Pratama",
+    "mentorJob": "Product Designer",
+    "jobPlace": "Traveloka",
+    "rating": 4.8,
+    "voters": 310,
+    "price": 280000,
+    "category": "Desain"
+  },
+  {
+    "title": "Public Speaking Confidence Boost",
+    "desc": "Bangun rasa percaya diri saat berbicara di depan umum dengan teknik dan latihan profesional.",
+    "mentorName": "Dinda Larasati",
+    "mentorJob": "Communication Coach",
+    "jobPlace": "Self Development ID",
+    "rating": 4.6,
+    "voters": 190,
+    "price": 200000,
+    "category": "Pengembangan Diri"
+  },
+  {
+    "title": "Brand Building for Entrepreneurs",
+    "desc": "Pelajari cara membangun brand yang kuat untuk meningkatkan kepercayaan pelanggan dan penjualan.",
+    "mentorName": "Rico Gunawan",
+    "mentorJob": "Brand Strategist",
+    "jobPlace": "Shopee",
+    "rating": 4.4,
+    "voters": 150,
+    "price": 270000,
+    "category": "Pemasaran"
+  },
+  {
+    "title": "Creative Logo Design Masterclass",
+    "desc": "Pelajari teknik membuat logo profesional menggunakan prinsip desain modern.",
+    "mentorName": "Sasha Putri",
+    "mentorJob": "Graphic Designer",
+    "jobPlace": "Canva Indonesia",
+    "rating": 4.9,
+    "voters": 340,
+    "price": 320000,
+    "category": "Desain"
+  },
+  {
+    "title": "Time Management & Productivity Hacks",
+    "desc": "Atur waktu secara efisien dan tingkatkan produktivitas harianmu dengan metode praktis.",
+    "mentorName": "Fahri Nugroho",
+    "mentorJob": "Personal Productivity Coach",
+    "jobPlace": "MindGrow",
+    "rating": 4.5,
+    "voters": 175,
+    "price": 180000,
+    "category": "Pengembangan Diri"
+  },
+  {
+    "title": "Entrepreneurship Fundamentals",
+    "desc": "Pelajari langkah-langkah penting untuk memulai bisnis sukses dari nol.",
+    "mentorName": "Clara Wijaya",
+    "mentorJob": "Startup Founder",
+    "jobPlace": "KopiKita",
+    "rating": 4.7,
+    "voters": 260,
+    "price": 350000,
+    "category": "Bisnis"
+  }
+]
