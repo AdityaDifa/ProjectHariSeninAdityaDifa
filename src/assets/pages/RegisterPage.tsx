@@ -6,7 +6,7 @@ import InputGenderComponent from "../components/inputs/InputGenderComponent";
 import InputTelpFlagComponent from "../components/inputs/InputTelpFlagComponent";
 import AuthButton from "../components/buttons/AuthButton";
 import { useNavigate } from "react-router-dom";
-import AuthRegister from "../services/AuthRegister";
+import { registerWithEmail } from "../services/auth/auth";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -22,21 +22,26 @@ export default function RegisterPage() {
   function checkPassword() {
     return password === passwordConfirm ? true : false;
   }
+  function passwordMinLength() {
+    return password.length < 6 ? true : false;
+  }
 
   function submitRegister(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (passwordMinLength()) {
+      return alert("Password should be at least 6 characters");
+    }
     if (checkPassword()) {
-      const phone: string = phoneFlag + shortPhone;
-      const isRegistered = AuthRegister({
+      registerWithEmail(
         email,
         password,
         fullName,
-        phone,
-        gender,
-      });
-      if (isRegistered) navigate("/login");
+        phoneFlag + shortPhone,
+        gender
+      );
+      navigate("/login");
     } else {
-      alert("Password and confirm password not match");
+      alert("password not match");
     }
   }
 
