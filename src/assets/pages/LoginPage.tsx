@@ -3,25 +3,26 @@ import AuthButton from "../components/buttons/AuthButton";
 import InputComponent from "../components/inputs/InputComponent";
 import AuthLayout from "../layouts/AuthLayout";
 import NavbarLayout from "../layouts/features/NavbarLayout";
-import AuthLogin from "../services/AuthLogin";
 import { useNavigate } from "react-router-dom";
+import { loginWithEmail, loginWithGoogle } from "../services/auth/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  function submit(e: any) {
+  async function submit(e: any) {
     e.preventDefault();
-    const checkAccount: boolean = AuthLogin({ email, password });
-    if (checkAccount) {
-      localStorage.setItem("isLogin", "true");
-      navigate("/");
-    } else {
-      localStorage.setItem("isLogin", "false");
-      alert("email atau password salah");
+    try {
+      const userCredential = await loginWithEmail(email, password);
+      console.log("Login berhasil:", userCredential.user);
+      alert("Login sukses!");
+    } catch (error: any) {
+      console.error("Error saat login:", error.message);
+      alert(error.message);
     }
   }
+
   return (
     <>
       <NavbarLayout />
@@ -75,6 +76,7 @@ export default function LoginPage() {
               label="Masuk dengan Google"
               type="button"
               theme="google"
+              action={loginWithGoogle}
             />
           </div>
         </form>
