@@ -44,7 +44,14 @@ export default function NavbarLayout() {
                   <a href="">
                     <p>Profile</p>
                   </a>
-                  <p onClick={() => signOut(auth)}>Logout</p>
+                  <p
+                    onClick={() => {
+                      signOut(auth);
+                      localStorage.removeItem("token");
+                    }}
+                  >
+                    Logout
+                  </p>
                 </>
               ) : (
                 <>
@@ -92,7 +99,10 @@ export default function NavbarLayout() {
                       </div>
                       <div className="hover:bg-gray-100 p-2">
                         <p
-                          onClick={() => signOut(auth)}
+                          onClick={() => {
+                            signOut(auth);
+                            localStorage.removeItem("token");
+                          }}
                           className="cursor-pointer"
                         >
                           Logout

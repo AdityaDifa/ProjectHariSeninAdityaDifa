@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import fullStarIcon from "../../images/icons/star icon/star.png";
 import halfStarIcon from "../../images/icons/star icon/half-star.png";
 import blankStarIcon from "../../images/icons/star icon/no-star.png";
+import { fetchAllClass } from "../../services/api/classesAPI";
 
 type TCard = {
+  id: string;
   title: string;
   desc: string;
   mentorName: string;
@@ -17,8 +19,18 @@ type TCard = {
   category?: string;
 };
 export default function ListClass({ category }: { category: any }) {
-  const lists = DBListClass;
+  const [lists, setLists] = useState<TCard[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // ✅ Fetch data once on mount
+  useEffect(() => {
+    async function fetchData() {
+      const listClass = await fetchAllClass();
+      setLists(listClass); // save data to state
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,6 +42,7 @@ export default function ListClass({ category }: { category: any }) {
   }, []);
 
   function Card({
+    id,
     title,
     desc,
     mentorName,
@@ -73,7 +86,10 @@ export default function ListClass({ category }: { category: any }) {
     }
 
     return (
-      <div className="h-full bg-white rounded-[10px] p-4 md:p-5 gap-2 md:gap-4 flex flex-col justify-between">
+      <div
+        id={id}
+        className="h-full bg-white rounded-[10px] p-4 md:p-5 gap-2 md:gap-4 flex flex-col justify-between"
+      >
         <div className="flex gap-3 md:flex-col h-full">
           <div
             className={`relative w-[82px] h-[82px] md:w-full md:h-[193px] overflow-hidden rounded-[10px] shrink-0`}
@@ -113,9 +129,10 @@ export default function ListClass({ category }: { category: any }) {
 
   return (
     <div className={`grid gap-4 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}>
-      {lists.map((list) =>
+      {lists.map((list: TCard) =>
         category === list.category ? (
           <Card
+            id={list.id}
             title={list.title}
             desc={list.desc}
             mentorName={list.mentorName}
@@ -130,6 +147,7 @@ export default function ListClass({ category }: { category: any }) {
         ) : (
           category === "Semua Kelas" && (
             <Card
+              id={list.id}
               title={list.title}
               desc={list.desc}
               mentorName={list.mentorName}
