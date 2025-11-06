@@ -6,7 +6,10 @@ import InputGenderComponent from "../components/inputs/InputGenderComponent";
 import InputTelpFlagComponent from "../components/inputs/InputTelpFlagComponent";
 import AuthButton from "../components/buttons/AuthButton";
 import { useNavigate } from "react-router-dom";
-import { registerWithEmail } from "../services/auth/auth";
+import {
+  loginOrRegisterWithGoogle,
+  registerWithEmail,
+} from "../services/auth/auth";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -144,6 +147,10 @@ export default function RegisterPage() {
             label="Daftar dengan Google"
             theme="google"
             type="button"
+            action={() => {
+              loginOrRegisterWithGoogle;
+              navigate("/");
+            }}
           />
         </div>
       </AuthLayout>

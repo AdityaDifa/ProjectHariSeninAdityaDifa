@@ -4,7 +4,10 @@ import InputComponent from "../components/inputs/InputComponent";
 import AuthLayout from "../layouts/AuthLayout";
 import NavbarLayout from "../layouts/features/NavbarLayout";
 import { useNavigate } from "react-router-dom";
-import { loginWithEmail, loginWithGoogle } from "../services/auth/auth";
+import {
+  loginOrRegisterWithGoogle,
+  loginWithEmail,
+} from "../services/auth/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,11 +18,25 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const userCredential = await loginWithEmail(email, password);
-      console.log("Login berhasil:", userCredential.user);
+      console.log("Login berhasil:", userCredential);
       alert("Login sukses!");
+
+      navigate("/");
     } catch (error: any) {
       console.error("Error saat login:", error.message);
       alert(error.message);
+    }
+  }
+  async function submitWithGoogle() {
+    try {
+      const userCredential = await loginOrRegisterWithGoogle();
+      navigate("/");
+
+      //save token
+      const token = await userCredential.getIdToken();
+      localStorage.setItem("token", token);
+    } catch (error) {
+      console.error("login or register error :", error);
     }
   }
 
@@ -76,7 +93,7 @@ export default function LoginPage() {
               label="Masuk dengan Google"
               type="button"
               theme="google"
-              action={loginWithGoogle}
+              action={submitWithGoogle}
             />
           </div>
         </form>
