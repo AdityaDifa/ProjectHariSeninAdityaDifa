@@ -20,8 +20,8 @@ export default function LoginPage() {
       const userCredential = await loginWithEmail(email, password);
       console.log("Login berhasil:", userCredential);
       alert("Login sukses!");
-
       navigate("/");
+      return userCredential;
     } catch (error: any) {
       console.error("Error saat login:", error.message);
       alert(error.message);

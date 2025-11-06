@@ -29,20 +29,29 @@ export default function RegisterPage() {
     return password.length < 6 ? true : false;
   }
 
-  function submitRegister(e: React.FormEvent<HTMLFormElement>) {
+  async function submitRegister(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (passwordMinLength()) {
       return alert("Password should be at least 6 characters");
     }
     if (checkPassword()) {
-      registerWithEmail(
-        email,
-        password,
-        fullName,
-        phoneFlag + shortPhone,
-        gender
-      );
-      navigate("/login");
+      try {
+        const userCredentials = await registerWithEmail(
+          email,
+          password,
+          fullName,
+          phoneFlag + shortPhone,
+          gender
+        );
+        navigate("/login");
+        return console.log("register success ", userCredentials);
+      } catch (error: any) {
+        if (error.code === "auth/email-already-in-use") {
+          alert("email has been used, use another email");
+        } else {
+          alert("error :" + error.message);
+        }
+      }
     } else {
       alert("password not match");
     }

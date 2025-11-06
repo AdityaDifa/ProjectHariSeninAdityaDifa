@@ -82,18 +82,22 @@ export default function NavbarLayout() {
                 onClick={() => setToggleMenu(!toggleMenu)}
               />
               {toggleMenu && (
-                <div className="absolute right-0 border p-2 bg-white w-25 flex flex-col gap-y-2">
+                <div className="absolute right-0 border bg-white w-25 flex flex-col">
                   {user && (
                     <>
-                      <a href="">
-                        <p>Profile</p>
-                      </a>
-                      <p
-                        onClick={() => signOut(auth)}
-                        className="cursor-pointer"
-                      >
-                        Logout
-                      </p>
+                      <div className="hover:bg-gray-100 p-2">
+                        <a href="">
+                          <p>Profile</p>
+                        </a>
+                      </div>
+                      <div className="hover:bg-gray-100 p-2">
+                        <p
+                          onClick={() => signOut(auth)}
+                          className="cursor-pointer"
+                        >
+                          Logout
+                        </p>
+                      </div>
                     </>
                   )}
                 </div>

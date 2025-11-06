@@ -5,18 +5,14 @@ import { doc, setDoc,getDoc } from "firebase/firestore";
 
 const googleProvider = new GoogleAuthProvider();
 
-function saveToken(token:string){
-      localStorage.setItem("token", token);
-}
 
 export async function loginWithEmail(email: string, password: string) {
   try{
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    const token = await userCredential.user.getIdToken()
-    saveToken(token)
     return userCredential;
   }catch(error){
     console.error("failed to login with email:",error)
+    throw error
   }
 }
 
@@ -26,9 +22,6 @@ export async function loginOrRegisterWithGoogle() {
     const user = result.user;
     const userRef = doc(db,"users",user.uid)
     const userSnap = await getDoc(userRef)
-
-    const token = await user.getIdToken()
-    saveToken(token)
     
     //if database not exist, add the data to database
     if(!userSnap.exists()){
@@ -72,7 +65,7 @@ export async function registerWithEmail(email:string, password:string,fullName:s
     });
 
     console.log("Register email sukses:", user);
-    return user;
+    return result;
     }catch(error){
         if(error === "FirebaseError: Firebase: Error (auth/email-already-in-use)."){
             return alert("email already in use")

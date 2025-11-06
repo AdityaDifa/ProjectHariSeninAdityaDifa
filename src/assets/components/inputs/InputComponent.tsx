@@ -32,6 +32,7 @@ export default function InputComponent({
   return (
     <div className="relative">
       <input
+        required
         value={value}
         onChange={(e) => setValue(e.target.value)}
         type={isPassword ? "password" : "text"}
