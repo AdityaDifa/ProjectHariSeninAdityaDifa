@@ -3,6 +3,9 @@ import logo from "../../images/Logo.png";
 import { useEffect, useState } from "react";
 import dropdownIcon from "../../images/icons/dropdown-icon.png";
 import AuthButton from "../../components/buttons/AuthButton";
+import { useAuth } from "../../contexts/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../../services/firebase/firebase";
 
 export default function NavbarLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -10,6 +13,8 @@ export default function NavbarLayout() {
   const { pathname } = useLocation();
   const inAuthPage: boolean = pathname == "/Login" || pathname == "/Register";
   const [toggleMenu, setToggleMenu] = useState(false);
+
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,14 +26,6 @@ export default function NavbarLayout() {
   }, []);
 
   function AuthNav() {
-    const isLogin: boolean =
-      localStorage.getItem("isLogin") === "true" || false;
-
-    function handleLogout() {
-      localStorage.setItem("isLogin", "false");
-      navigate(0);
-    }
-
     function MobileVIew() {
       return (
         <div className="relative">
@@ -42,12 +39,12 @@ export default function NavbarLayout() {
               <a href="">
                 <p>Kategori</p>
               </a>
-              {isLogin ? (
+              {user ? (
                 <>
                   <a href="">
                     <p>Profile</p>
                   </a>
-                  <p onClick={handleLogout}>Logout</p>
+                  <p onClick={() => signOut(auth)}>Logout</p>
                 </>
               ) : (
                 <>
@@ -76,7 +73,7 @@ export default function NavbarLayout() {
               Kategori
             </h5>
           </a>
-          {isLogin ? (
+          {user ? (
             <div className="relative">
               <img
                 src="https://avatar.iran.liara.run/public"
@@ -86,12 +83,15 @@ export default function NavbarLayout() {
               />
               {toggleMenu && (
                 <div className="absolute right-0 border p-2 bg-white w-25 flex flex-col gap-y-2">
-                  {isLogin && (
+                  {user && (
                     <>
                       <a href="">
                         <p>Profile</p>
                       </a>
-                      <p onClick={handleLogout} className="cursor-pointer">
+                      <p
+                        onClick={() => signOut(auth)}
+                        className="cursor-pointer"
+                      >
                         Logout
                       </p>
                     </>

@@ -21,7 +21,7 @@ export default function AuthButton({
     <button
       onClick={() => action?.()}
       type={type}
-      className={`w-full rounded-[10px] text-[14px] md:text-[16px] font-bold font-DMSans h-[34px] md:h-[42px] ${
+      className={`w-full rounded-[10px] text-[14px] md:text-[16px] font-bold font-DMSans h-[34px] md:h-[42px] cursor-pointer ${
         theme === "primary"
           ? style[0]
           : theme === "secondary"
