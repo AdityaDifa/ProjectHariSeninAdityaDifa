@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc,getDoc } from "firebase/firestore";
@@ -74,3 +74,17 @@ export async function registerWithEmail(email:string, password:string,fullName:s
         throw error;
     }
 }
+
+// export async function updateAccountProfile(email:string, password:string,fullName:string,phone:string, gender:string){
+//   const user = auth.currentUser;
+
+//   if (!user) {
+//       alert("User tidak terdeteksi, silakan login ulang");
+//       return;
+//   }
+
+//   try{
+//     await updateEmail(user, email)
+//     await updatePassword(user, password)
+//   }
+// }

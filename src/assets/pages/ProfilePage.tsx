@@ -11,6 +11,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../services/firebase/firebase";
 import InputAccoutComponent from "../components/inputs/inputAccountComponent";
 import InputTelpFlagComponent from "../components/inputs/InputTelpFlagComponent";
+import InputGenderComponent from "../components/inputs/InputGenderComponent";
+import AuthButton from "../components/buttons/AuthButton";
 
 type TButtonMenu = {
   id: string;
@@ -35,17 +37,21 @@ type UserData = {
   fullName?: string;
   email?: string;
   phoneNumber?: string;
+  gender?: string;
 };
 
 export default function ProfilePage() {
   const [menu, setMenu] = useState("profile");
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); //loading actually useless
 
   const [flag, setFlag] = useState("");
-  const [numberPhone, setNumberPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     const auth = getAuth();
@@ -58,8 +64,13 @@ export default function ProfilePage() {
           if (userSnap.exists()) {
             const data = userSnap.data();
             setUserData(userSnap.data());
+
+            //set data in state
             setFlag(data?.phoneNumber?.slice(0, 3) ?? "");
-            setNumberPhone(data?.phoneNumber?.slice(3) ?? "");
+            setPhoneNumber(data?.phoneNumber?.slice(3) ?? "");
+            setFullName(data?.fullName);
+            setEmail(data?.email);
+            setGender(data?.gender);
           } else {
             console.warn("data not found");
             setUserData(null);
@@ -76,6 +87,13 @@ export default function ProfilePage() {
 
     return () => unsubscribe();
   }, []);
+
+  function submitEditProfile() {
+    if (password === confirmPassword) {
+    } else {
+      alert("password is not match");
+    }
+  }
 
   function ButtonMenu({ id, label, icon: Icon }: TButtonMenu) {
     function buttonClick() {
@@ -135,10 +153,10 @@ export default function ProfilePage() {
               />
               <div>
                 <h5 className="font-bold text-[16px] md:text-[20px]">
-                  {loading ? "loading" : userData?.fullName}
+                  {fullName}
                 </h5>
                 <p className="text-[#222325] text-[16px] md:text-[18px]">
-                  {loading ? "loading" : userData?.email}
+                  {email}
                 </p>
                 <a
                   href=""
@@ -149,37 +167,63 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="border-t border-[#F1F1F1] flex w-full my-2"></div>
-            <div className="grid md:grid-cols-3 py-3 gap-4">
+            <form
+              className="grid md:grid-cols-3 py-3 gap-4"
+              onSubmit={submitEditProfile}
+            >
               <InputAccoutComponent
+                id="fullName"
                 type="string"
                 label={"Nama Lengkap"}
                 value={userData?.fullName ?? ""}
                 setValue={setFullName}
               />
               <InputAccoutComponent
+                id="email"
                 type="string"
                 label={"E-Mail"}
                 value={userData?.email ?? ""}
                 setValue={setEmail}
               />
               <div className="flex">
-                <div className="basis-1/3">
+                <div className="basis-1/3 border border-[#3A35411F] rounded-[10px] focus:border-[#3ECF4C] focus:outline-none">
                   <InputTelpFlagComponent
-                    id="phoneNumber"
+                    id="phoneFlag"
                     value={flag}
                     setValue={setFlag}
                   />
                 </div>
                 <div className="basis-2/3">
                   <InputAccoutComponent
+                    id="phoneNumber"
                     type="string"
                     label={"No. Hp"}
-                    value={numberPhone}
-                    setValue={setNumberPhone}
+                    value={phoneNumber}
+                    setValue={setPhoneNumber}
                   />
                 </div>
               </div>
-            </div>
+              <InputGenderComponent
+                id="gender"
+                value={gender}
+                setValue={setGender}
+              />
+              <InputAccoutComponent
+                type="password"
+                label="Password"
+                id="password"
+                value={password}
+                setValue={setPassword}
+              />
+              <InputAccoutComponent
+                type="password"
+                label="Konfirmasi Password"
+                id="confirmPassword"
+                value={confirmPassword}
+                setValue={setConfirmPassword}
+              />
+              <AuthButton label="Simpan" theme="primary" type="submit" />
+            </form>
           </div>
         </div>
       </DashboardLayout>
