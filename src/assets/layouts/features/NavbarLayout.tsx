@@ -11,10 +11,22 @@ export default function NavbarLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const inAuthPage: boolean = pathname == "/Login" || pathname == "/Register";
+  const [inAuthPage, setInAuthPage] = useState(
+    pathname === "/register" || "/login" ? true : false
+  );
   const [toggleMenu, setToggleMenu] = useState(false);
 
   const { user, loading } = useAuth();
+
+  useEffect(() => {
+    const checkPage = () => {
+      setInAuthPage(
+        pathname === "/register" || pathname === "/login" ? true : false
+      );
+    };
+    console.log(`navbar - page in ${pathname} cek ${inAuthPage}`);
+    return checkPage();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,9 +53,13 @@ export default function NavbarLayout() {
               </a>
               {user ? (
                 <>
-                  <a href="">
-                    <p>Profile</p>
-                  </a>
+                  <p
+                    onClick={() => {
+                      navigate("/profile");
+                    }}
+                  >
+                    Profile
+                  </p>
                   <p
                     onClick={() => {
                       signOut(auth);
@@ -94,9 +110,13 @@ export default function NavbarLayout() {
                   {user && (
                     <>
                       <div className="hover:bg-gray-100 p-2">
-                        <a href="">
-                          <p>Profile</p>
-                        </a>
+                        <p
+                          onClick={() => {
+                            navigate("/profile");
+                          }}
+                        >
+                          Profile
+                        </p>
                       </div>
                       <div className="hover:bg-gray-100 p-2">
                         <p
