@@ -24,7 +24,6 @@ export default function NavbarLayout() {
         pathname === "/register" || pathname === "/login" ? true : false
       );
     };
-    console.log(`navbar - page in ${pathname} cek ${inAuthPage}`);
     return checkPage();
   }, []);
 

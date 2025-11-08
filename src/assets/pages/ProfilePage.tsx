@@ -5,7 +5,10 @@ import NavbarLayout from "../layouts/features/NavbarLayout";
 import type { IconType } from "react-icons";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import { CiShoppingBasket } from "react-icons/ci";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../services/firebase/firebase";
 
 type TButtonMenu = {
   id: string;
@@ -26,8 +29,42 @@ const buttonStyle = {
   },
 };
 
+type UserData = {
+  fullName?: string;
+  email?: string;
+};
+
 export default function ProfilePage() {
   const [menu, setMenu] = useState("profile");
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            setUserData(userSnap.data());
+          } else {
+            console.warn("data not found");
+            setUserData(null);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        setUserData(null);
+      }
+
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   function ButtonMenu({ id, label, icon: Icon }: TButtonMenu) {
     function buttonClick() {
@@ -79,7 +116,28 @@ export default function ProfilePage() {
               />
             </div>
           </div>
-          <div className="w-full border-[#3A35411F] border bg-white"></div>
+          <div className="w-full border-[#3A35411F] border bg-white">
+            <div className="flex gap-3.5">
+              <img
+                src="https://avatar.iran.liara.run/public"
+                className="w-10 md:w-[92px]"
+              />
+              <div>
+                <h5 className="font-bold text-[16px] md:text-[20px]">
+                  {loading ? "loading" : userData?.fullName}
+                </h5>
+                <p className="text-[#222325] text-[16px] md:text-[18px]">
+                  {loading ? "loading" : userData?.email}
+                </p>
+                <a
+                  href=""
+                  className="text-[#F64920] font-bold text-[14px] md:text-[16px]"
+                >
+                  Ganti Foto Profil
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </DashboardLayout>
       <FooterLayout />
