@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../services/firebase/firebase";
+import InputAccoutComponent from "../components/inputs/inputAccountComponent";
+import InputTelpFlagComponent from "../components/inputs/InputTelpFlagComponent";
 
 type TButtonMenu = {
   id: string;
@@ -32,12 +34,18 @@ const buttonStyle = {
 type UserData = {
   fullName?: string;
   email?: string;
+  phoneNumber?: string;
 };
 
 export default function ProfilePage() {
   const [menu, setMenu] = useState("profile");
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [flag, setFlag] = useState("");
+  const [numberPhone, setNumberPhone] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const auth = getAuth();
@@ -48,7 +56,10 @@ export default function ProfilePage() {
           const userSnap = await getDoc(userRef);
 
           if (userSnap.exists()) {
+            const data = userSnap.data();
             setUserData(userSnap.data());
+            setFlag(data?.phoneNumber?.slice(0, 3) ?? "");
+            setNumberPhone(data?.phoneNumber?.slice(3) ?? "");
           } else {
             console.warn("data not found");
             setUserData(null);
@@ -116,11 +127,11 @@ export default function ProfilePage() {
               />
             </div>
           </div>
-          <div className="w-full border-[#3A35411F] border bg-white">
-            <div className="flex gap-3.5">
+          <div className="w-full border-[#3A35411F] border bg-white p-6 rounded-[10px] gap-6">
+            <div className="flex gap-3.5 items-center">
               <img
                 src="https://avatar.iran.liara.run/public"
-                className="w-10 md:w-[92px]"
+                className="w-10 h-10 md:w-[92px] md:h-[92px] flex-nowrap"
               />
               <div>
                 <h5 className="font-bold text-[16px] md:text-[20px]">
@@ -135,6 +146,38 @@ export default function ProfilePage() {
                 >
                   Ganti Foto Profil
                 </a>
+              </div>
+            </div>
+            <div className="border-t border-[#F1F1F1] flex w-full my-2"></div>
+            <div className="grid md:grid-cols-3 py-3 gap-4">
+              <InputAccoutComponent
+                type="string"
+                label={"Nama Lengkap"}
+                value={userData?.fullName ?? ""}
+                setValue={setFullName}
+              />
+              <InputAccoutComponent
+                type="string"
+                label={"E-Mail"}
+                value={userData?.email ?? ""}
+                setValue={setEmail}
+              />
+              <div className="flex">
+                <div className="basis-1/3">
+                  <InputTelpFlagComponent
+                    id="phoneNumber"
+                    value={flag}
+                    setValue={setFlag}
+                  />
+                </div>
+                <div className="basis-2/3">
+                  <InputAccoutComponent
+                    type="string"
+                    label={"No. Hp"}
+                    value={numberPhone}
+                    setValue={setNumberPhone}
+                  />
+                </div>
               </div>
             </div>
           </div>
