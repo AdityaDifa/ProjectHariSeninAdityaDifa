@@ -48,6 +48,7 @@ export default function NavbarLayout() {
                     onClick={() => {
                       signOut(auth);
                       localStorage.removeItem("token");
+                      navigate("/");
                     }}
                   >
                     Logout
@@ -102,6 +103,7 @@ export default function NavbarLayout() {
                           onClick={() => {
                             signOut(auth);
                             localStorage.removeItem("token");
+                            navigate("/");
                           }}
                           className="cursor-pointer"
                         >
