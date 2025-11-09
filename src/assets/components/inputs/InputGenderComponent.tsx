@@ -14,7 +14,7 @@ export default function InputGenderComponent({
       id={id}
       value={value}
       onChange={(e) => setValue(e.target.value)}
-      className="w-full border border-[#3A35411F] px-[10px] py-[4px] rounded-[6px]"
+      className="w-full border border-[#3A35411F] px-2.5 py-1 rounded-md"
     >
       <option value="male">Male</option>
       <option value="female">Female</option>

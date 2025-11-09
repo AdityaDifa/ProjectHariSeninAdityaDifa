@@ -37,14 +37,14 @@ export default function InputComponent({
         onChange={(e) => setValue(e.target.value)}
         type={isPassword ? "password" : "text"}
         id={id}
-        className="w-full h-fit rounded-[6px] border border-[#3A35411F] py-[4px] pl-[10px] pr-[50px] text-[14px] md:text-[16px]"
+        className="w-full h-fit rounded-md border border-[#3A35411F] py-1 pl-2.5 pr-[50px] text-[14px] md:text-[16px]"
       />
       {isPassword && (
         <img
           id={`${id}icon`}
           src={hidePassword}
           alt=""
-          className="absolute w-[24px] right-5 top-[15%] opacity-50"
+          className="absolute w-6 right-5 top-[15%] opacity-50"
           onClick={togglePassword}
         />
       )}

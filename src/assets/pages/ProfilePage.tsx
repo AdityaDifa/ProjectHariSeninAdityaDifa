@@ -44,7 +44,6 @@ type UserData = {
 export default function ProfilePage() {
   const [menu, setMenu] = useState("profile");
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true); //loading actually useless
 
   const [flag, setFlag] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -96,8 +95,6 @@ export default function ProfilePage() {
       } else {
         setUserData(null);
       }
-
-      setLoading(false);
     });
 
     return () => unsubscribe();

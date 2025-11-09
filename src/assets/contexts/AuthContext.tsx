@@ -1,9 +1,8 @@
 // src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../services/firebase/firebase";
-import firebase from "firebase/compat/app";
 
 type AuthContextType = {
   user: User | null;

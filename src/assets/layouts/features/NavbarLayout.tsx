@@ -6,10 +6,6 @@ import AuthButton from "../../components/buttons/AuthButton";
 import { useAuth } from "../../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase/firebase";
-import {
-  checkAccountIsGoogle,
-  sendImagePicture,
-} from "../../services/auth/auth";
 
 export default function NavbarLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -22,7 +18,7 @@ export default function NavbarLayout() {
 
   const { imageUrl, isGoogleAccount } = useAuth();
 
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const checkPage = () => {
@@ -167,7 +163,7 @@ export default function NavbarLayout() {
   }
 
   return (
-    <header className="w-full h-fit md:h-[80px] bg-white flex justify-between items-center border-y md:border-t-0 border-y-[#F1F1F1] px-[24px] py-[16px] md:px-[120px] md:py-[12px] shadow-[#3E434A4F] shadow-md md:shadow-none z-10 relative">
+    <header className="w-full h-fit md:h-20 bg-white flex justify-between items-center border-y md:border-t-0 border-y-[#F1F1F1] px-6 py-4 md:px-[120px] md:py-3 shadow-[#3E434A4F] shadow-md md:shadow-none z-10 relative">
       <img src={logo} alt="" className="w-[152px] md:w-fit" />
       {!inAuthPage && <AuthNav />}
     </header>

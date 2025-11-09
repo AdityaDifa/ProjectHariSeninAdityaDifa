@@ -1,4 +1,3 @@
-import DBListClass from "../../services/fakeListClass.json";
 import dummyClassPicture from "../../images/background-images/dummyClassPicture.jpg";
 import { useEffect, useState } from "react";
 import fullStarIcon from "../../images/icons/star icon/star.png";

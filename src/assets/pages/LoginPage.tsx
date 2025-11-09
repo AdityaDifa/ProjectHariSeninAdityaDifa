@@ -44,24 +44,21 @@ export default function LoginPage() {
     <>
       <NavbarLayout />
       <AuthLayout>
-        <div className="gap-[10px] w-full">
+        <div className="gap-2.5 w-full">
           <h1 className="text-center">Masuk ke Akun</h1>
           <p className="text-center gray">
             Yuk, lanjutin belajarmu di videobelajar.
           </p>
         </div>
-        <form
-          className="gap-[20px] md:gap-[24px] w-full"
-          onSubmit={(e) => submit(e)}
-        >
-          <div className="w-full flex flex-col gap-[24px]">
-            <div className="w-full gap-[12px] md:gap-[16px]">
+        <form className="gap-5 md:gap-6 w-full" onSubmit={(e) => submit(e)}>
+          <div className="w-full flex flex-col gap-6">
+            <div className="w-full gap-3 md:gap-4">
               <p className="gray">
                 E-Mail <span className="text-red-500">*</span>
               </p>
               <InputComponent id="email" value={email} setValue={setEmail} />
             </div>
-            <div className="w-full gap-[12px] md:gap-[16px]">
+            <div className="w-full gap-3 md:gap-4">
               <p className="gray">
                 Kata Sandi <span className="text-red-500">*</span>
               </p>
@@ -75,7 +72,7 @@ export default function LoginPage() {
             <a href="">
               <p className="text-[#333333AD] text-end">Lupa Password?</p>
             </a>
-            <div className="flex flex-col gap-[16px] w-full">
+            <div className="flex flex-col gap-4 w-full">
               <AuthButton label="Masuk" theme="primary" type="submit" />
               <AuthButton
                 label="Daftar"

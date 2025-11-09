@@ -1,6 +1,5 @@
 import hidePassword from "../../images/icons/hide-password.png";
 import showPassword from "../../images/icons/view-password.png";
-import { checkAccountIsGoogle } from "../../services/auth/auth";
 
 interface TInputAccountComponent {
   type: string;
