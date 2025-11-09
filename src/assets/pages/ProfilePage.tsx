@@ -13,7 +13,9 @@ import InputAccoutComponent from "../components/inputs/InputAccountComponent";
 import InputTelpFlagComponent from "../components/inputs/InputTelpFlagComponent";
 import InputGenderComponent from "../components/inputs/InputGenderComponent";
 import AuthButton from "../components/buttons/AuthButton";
-import { checkAccountIsGoogle, sendImagePicture } from "../services/auth/auth";
+import { useAuth } from "../contexts/AuthContext";
+import { updateAccountProfile } from "../services/auth/auth";
+import { useNavigate } from "react-router-dom";
 
 type TButtonMenu = {
   id: string;
@@ -52,20 +54,11 @@ export default function ProfilePage() {
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
 
-  const [isGoogleAccount, setIsGoogleAccount] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | undefined>("");
+  const { imageUrl, isGoogleAccount } = useAuth();
 
-  useEffect(() => {
-    const fetchProvider = async () => {
-      const result = await checkAccountIsGoogle(); // hasilnya boolean
-      setIsGoogleAccount(result);
-
-      const pictureImage = await sendImagePicture();
-      setProfilePicture(pictureImage);
-    };
-    fetchProvider();
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
@@ -100,11 +93,32 @@ export default function ProfilePage() {
     return () => unsubscribe();
   }, []);
 
-  function submitEditProfile() {
-    if (password === confirmPassword) {
-    } else {
-      alert("password is not match");
+  async function submitEditProfile(e: any) {
+    e.preventDefault();
+
+    if (password.length < 6 && confirmPassword.length < 6) {
+      return alert("password must be more than 6");
     }
+    if (password !== confirmPassword) {
+      alert("password doesnt match");
+    } else {
+      if (isGoogleAccount) {
+        //if using google account
+        await updateAccountProfile(fullName);
+      } else {
+        //if using native email
+        await updateAccountProfile(
+          fullName,
+          gender,
+          flag + phoneNumber,
+          email,
+          password,
+          oldPassword
+        );
+      }
+    }
+
+    navigate(0);
   }
 
   function ButtonMenu({ id, label, icon: Icon }: TButtonMenu) {
@@ -162,17 +176,17 @@ export default function ProfilePage() {
               <img
                 src={
                   isGoogleAccount
-                    ? profilePicture
+                    ? imageUrl
                     : "https://avatar.iran.liara.run/public"
                 }
                 className="w-10 h-10 md:w-[92px] md:h-[92px] flex-nowrap"
               />
               <div>
                 <h5 className="font-bold text-[16px] md:text-[20px]">
-                  {fullName}
+                  {userData?.fullName}
                 </h5>
                 <p className="text-[#222325] text-[16px] md:text-[18px]">
-                  {email}
+                  {userData?.email}
                 </p>
                 <a
                   href=""
@@ -191,56 +205,66 @@ export default function ProfilePage() {
                 id="fullName"
                 type="string"
                 label={"Nama Lengkap"}
-                value={userData?.fullName ?? ""}
+                value={fullName ?? ""}
                 setValue={setFullName}
               />
-              <InputAccoutComponent
-                id="email"
-                type="string"
-                label={"E-Mail"}
-                value={userData?.email ?? ""}
-                setValue={setEmail}
-                disabled={isGoogleAccount}
-              />
-              <div className="flex">
-                <div className="basis-1/3 border border-[#3A35411F] rounded-[10px] focus:border-[#3ECF4C] focus:outline-none">
-                  <InputTelpFlagComponent
-                    id="phoneFlag"
-                    value={flag}
-                    setValue={setFlag}
-                  />
-                </div>
-                <div className="basis-2/3">
+              {!isGoogleAccount && (
+                <>
+                  {" "}
                   <InputAccoutComponent
-                    id="phoneNumber"
+                    id="email"
                     type="string"
-                    label={"No. Hp"}
-                    value={phoneNumber}
-                    setValue={setPhoneNumber}
+                    label={"E-Mail"}
+                    value={email ?? ""}
+                    setValue={setEmail}
+                    disabled={true}
                   />
-                </div>
-              </div>
-              <InputGenderComponent
-                id="gender"
-                value={gender}
-                setValue={setGender}
-              />
-              <InputAccoutComponent
-                type="password"
-                label="Password"
-                id="password"
-                value={password}
-                setValue={setPassword}
-                disabled={isGoogleAccount}
-              />
-              <InputAccoutComponent
-                type="password"
-                label="Konfirmasi Password"
-                id="confirmPassword"
-                value={confirmPassword}
-                setValue={setConfirmPassword}
-                disabled={isGoogleAccount}
-              />
+                  <div className="flex">
+                    <div className="basis-1/3 border border-[#3A35411F] rounded-[10px] focus:border-[#3ECF4C] focus:outline-none">
+                      <InputTelpFlagComponent
+                        id="phoneFlag"
+                        value={flag}
+                        setValue={setFlag}
+                      />
+                    </div>
+                    <div className="basis-2/3">
+                      <InputAccoutComponent
+                        id="phoneNumber"
+                        type="string"
+                        label={"No. Hp"}
+                        value={phoneNumber}
+                        setValue={setPhoneNumber}
+                      />
+                    </div>
+                  </div>
+                  <InputGenderComponent
+                    id="gender"
+                    value={gender}
+                    setValue={setGender}
+                  />
+                  <InputAccoutComponent
+                    type="password"
+                    label="Password Lama"
+                    id="oldPassword"
+                    value={oldPassword}
+                    setValue={setOldPassword}
+                  />
+                  <InputAccoutComponent
+                    type="password"
+                    label="Password"
+                    id="password"
+                    value={password}
+                    setValue={setPassword}
+                  />
+                  <InputAccoutComponent
+                    type="password"
+                    label="Konfirmasi Password"
+                    id="confirmPassword"
+                    value={confirmPassword}
+                    setValue={setConfirmPassword}
+                  />
+                </>
+              )}
               <AuthButton label="Simpan" theme="primary" type="submit" />
             </form>
           </div>

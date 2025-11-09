@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  console.log(user);
   return (
     <AuthContext.Provider value={{ user, loading, imageUrl, isGoogleAccount }}>
       {children}

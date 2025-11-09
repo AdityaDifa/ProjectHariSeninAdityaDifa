@@ -1,7 +1,8 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, setDoc,getDoc } from "firebase/firestore";
+import { doc, setDoc,getDoc, updateDoc } from "firebase/firestore";
+import { EmailAuthProvider } from "firebase/auth/web-extension";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -75,19 +76,49 @@ export async function registerWithEmail(email:string, password:string,fullName:s
     }
 }
 
-// export async function updateAccountProfile(email:string, password:string,fullName:string,phone:string, gender:string){
-//   const user = auth.currentUser;
+export async function updateAccountProfile(newName:string, newGender?:string, newPhoneNumber?:string, email?:string, newPassword?:string, oldPassword?:string){
+  const user = auth.currentUser
+  console.log(user)
 
-//   if (!user) {
-//       alert("User tidak terdeteksi, silakan login ulang");
-//       return;
-//   }
+  if(!user){
+    console.log("user not found")
+    return
+  }
+  
+  try{
+    const userRef = doc(db, "users", user.uid)
+    
+    if(user.providerData[0].providerId === "google.com"){ //if using google account
+      const newData:object = {fullName: newName}
 
-//   try{
-//     await updateEmail(user, email)
-//     await updatePassword(user, password)
-//   }
-// }
+      await updateDoc(userRef,newData)
+      await updateProfile(user, newData)
+
+    }else{ //if using native email instead
+    try{
+      const credential = EmailAuthProvider.credential(email!, oldPassword!)
+      await reauthenticateWithCredential(user, credential)
+
+      await updateDoc(userRef, {
+      fullName:newName,
+      password:newPassword,
+      gender:newGender,
+      phoneNumber:newPhoneNumber
+    })
+
+      if(newPassword !== oldPassword){
+        await updatePassword(user, newPassword!)
+      }
+    }catch(error){
+      console.log(error)
+    }
+    
+    }
+  }catch(error){
+    console.error(error)
+  }
+
+}
 
 export async function checkAccountIsGoogle():Promise<boolean>{
   const user = auth.currentUser;
