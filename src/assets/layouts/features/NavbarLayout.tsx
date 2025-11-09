@@ -6,6 +6,10 @@ import AuthButton from "../../components/buttons/AuthButton";
 import { useAuth } from "../../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase/firebase";
+import {
+  checkAccountIsGoogle,
+  sendImagePicture,
+} from "../../services/auth/auth";
 
 export default function NavbarLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -15,6 +19,8 @@ export default function NavbarLayout() {
     pathname === "/register" || "/login" ? true : false
   );
   const [toggleMenu, setToggleMenu] = useState(false);
+
+  const { imageUrl, isGoogleAccount } = useAuth();
 
   const { user, loading } = useAuth();
 
@@ -99,7 +105,11 @@ export default function NavbarLayout() {
           {user ? (
             <div className="relative">
               <img
-                src="https://avatar.iran.liara.run/public"
+                src={
+                  isGoogleAccount
+                    ? imageUrl
+                    : "https://avatar.iran.liara.run/public"
+                }
                 alt=""
                 className="w-10"
                 onClick={() => setToggleMenu(!toggleMenu)}

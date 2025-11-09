@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateEmail, updatePassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc,getDoc } from "firebase/firestore";
@@ -88,3 +88,17 @@ export async function registerWithEmail(email:string, password:string,fullName:s
 //     await updatePassword(user, password)
 //   }
 // }
+
+export async function checkAccountIsGoogle():Promise<boolean>{
+  const user = auth.currentUser;
+  if (!user) return false;
+
+  const providerId = user.providerData[0]?.providerId;
+  return providerId === "google.com";
+}
+
+export async function sendImagePicture(){
+  const user = auth.currentUser;
+  const imageProfilePicture = user?.photoURL ?? ""
+  return imageProfilePicture
+}

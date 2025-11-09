@@ -9,10 +9,11 @@ import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../services/firebase/firebase";
-import InputAccoutComponent from "../components/inputs/inputAccountComponent";
+import InputAccoutComponent from "../components/inputs/InputAccountComponent";
 import InputTelpFlagComponent from "../components/inputs/InputTelpFlagComponent";
 import InputGenderComponent from "../components/inputs/InputGenderComponent";
 import AuthButton from "../components/buttons/AuthButton";
+import { checkAccountIsGoogle, sendImagePicture } from "../services/auth/auth";
 
 type TButtonMenu = {
   id: string;
@@ -52,6 +53,20 @@ export default function ProfilePage() {
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [isGoogleAccount, setIsGoogleAccount] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | undefined>("");
+
+  useEffect(() => {
+    const fetchProvider = async () => {
+      const result = await checkAccountIsGoogle(); // hasilnya boolean
+      setIsGoogleAccount(result);
+
+      const pictureImage = await sendImagePicture();
+      setProfilePicture(pictureImage);
+    };
+    fetchProvider();
+  }, []);
 
   useEffect(() => {
     const auth = getAuth();
@@ -148,7 +163,11 @@ export default function ProfilePage() {
           <div className="w-full border-[#3A35411F] border bg-white p-6 rounded-[10px] gap-6">
             <div className="flex gap-3.5 items-center">
               <img
-                src="https://avatar.iran.liara.run/public"
+                src={
+                  isGoogleAccount
+                    ? profilePicture
+                    : "https://avatar.iran.liara.run/public"
+                }
                 className="w-10 h-10 md:w-[92px] md:h-[92px] flex-nowrap"
               />
               <div>
@@ -184,6 +203,7 @@ export default function ProfilePage() {
                 label={"E-Mail"}
                 value={userData?.email ?? ""}
                 setValue={setEmail}
+                disabled={isGoogleAccount}
               />
               <div className="flex">
                 <div className="basis-1/3 border border-[#3A35411F] rounded-[10px] focus:border-[#3ECF4C] focus:outline-none">
@@ -214,6 +234,7 @@ export default function ProfilePage() {
                 id="password"
                 value={password}
                 setValue={setPassword}
+                disabled={isGoogleAccount}
               />
               <InputAccoutComponent
                 type="password"
@@ -221,6 +242,7 @@ export default function ProfilePage() {
                 id="confirmPassword"
                 value={confirmPassword}
                 setValue={setConfirmPassword}
+                disabled={isGoogleAccount}
               />
               <AuthButton label="Simpan" theme="primary" type="submit" />
             </form>

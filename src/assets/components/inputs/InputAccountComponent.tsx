@@ -1,5 +1,6 @@
 import hidePassword from "../../images/icons/hide-password.png";
 import showPassword from "../../images/icons/view-password.png";
+import { checkAccountIsGoogle } from "../../services/auth/auth";
 
 interface TInputAccountComponent {
   type: string;
@@ -7,6 +8,7 @@ interface TInputAccountComponent {
   value: string;
   setValue: (newValue: string) => void;
   id: string;
+  disabled?: boolean;
 }
 
 export default function InputAccoutComponent({
@@ -15,6 +17,7 @@ export default function InputAccoutComponent({
   value,
   setValue,
   id,
+  disabled = false,
 }: TInputAccountComponent) {
   let isShow: boolean = false;
   function togglePassword() {
@@ -33,6 +36,7 @@ export default function InputAccoutComponent({
   return (
     <div className="w-full h-[49px] relative">
       <input
+        disabled={disabled}
         required
         id={id}
         onChange={(e) => setValue(e.target.value)}
@@ -40,9 +44,13 @@ export default function InputAccoutComponent({
         type={type}
         className={`peer w-full h-full border border-[#3A35411F] px-3 rounded-[10px] focus:border-[#3ECF4C] focus:outline-none ${
           type === "password" && "pr-12"
-        }`}
+        } ${disabled && "bg-gray-300"}`}
       />
-      <p className="absolute -top-3 left-2 bg-white text-[#333333AD] peer-focus:text-[#3ECF4C] transition-colors duration-200">
+      <p
+        className={`absolute -top-3 left-2 ${
+          disabled ? "" : "bg-white"
+        } text-[#333333AD] peer-focus:text-[#3ECF4C] transition-colors duration-200`}
+      >
         {label}
       </p>
       {type === "password" && (
