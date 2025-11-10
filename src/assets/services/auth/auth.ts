@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, reauthenticateWithCredential, sendEmailVerification, signInWithEmailAndPassword, updateEmail, updatePassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, reauthenticateWithCredential, signInWithEmailAndPassword, updatePassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc,getDoc, updateDoc } from "firebase/firestore";
