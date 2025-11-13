@@ -16,7 +16,11 @@ import AuthButton from "../components/buttons/AuthButton";
 import { updateAccountProfile } from "../services/auth/auth";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
-import { fetchAllClass, getPurchasedClasses } from "../services/api/classesAPI";
+import {
+  fetchAllClass,
+  getPurchasedClasses,
+  refundPurchasedClass,
+} from "../services/api/classesAPI";
 
 type TButtonMenu = {
   id: string;
@@ -186,13 +190,11 @@ export default function ProfilePage() {
       const found = listClasses.find((cls) => cls.id === purchased.id);
       return { ...purchased, ...found };
     });
-    console.log(mergedData);
     return (
       <>
         {mergedData.map((data) => {
           const timestamp = data.purchased_date;
           const date = timestamp.toDate();
-          console.log(date.toLocaleDateString("id-ID"));
           return (
             <div
               className="border border-[#3A35411F] p-1 flex flex-col gap-1"
@@ -204,7 +206,13 @@ export default function ProfilePage() {
                 purchased : {date.toLocaleDateString("id-ID")}{" "}
                 {date.toLocaleTimeString("id-ID")}
               </p>
-              <button className="p-1 border border-red-600 bg-red-500 text-white rounded-sm md:w-[30%]">
+              <button
+                className="p-1 border border-red-600 bg-red-500 text-white rounded-sm md:w-[30%]"
+                onClick={async () => {
+                  await refundPurchasedClass(userUid, data.id);
+                  navigate(0);
+                }}
+              >
                 Refund
               </button>
             </div>

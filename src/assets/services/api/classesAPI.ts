@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 type TCard = {
@@ -69,10 +69,25 @@ export async function getPurchasedClasses(userUid: string | undefined) {
       id: doc.id,          // ini classId
       ...doc.data(),       // misalnya purchased_date, dsb
     }));
-    
+
     return purchased;
   } catch (error) {
     console.error("Error getting purchased classes:", error);
     return [];
   }
+}
+
+export async function refundPurchasedClass(userUid:string|undefined, classId:string){
+    if(!userUid){
+        return alert("user belum login")
+    }
+
+    try{
+        const docRef = doc(db, "users", userUid, "purchasedClasses", classId);
+        await deleteDoc(docRef)
+        alert("kelas sukses dihapus")
+    }catch(error){
+        console.error(error)
+        alert("gagal refund kelas")
+    }
 }

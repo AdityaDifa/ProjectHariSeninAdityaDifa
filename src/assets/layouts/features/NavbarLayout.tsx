@@ -47,7 +47,10 @@ export default function NavbarLayout() {
           />
           {toggleMenu && (
             <div className="absolute right-0 border p-2 bg-white w-25 flex flex-col gap-y-2">
-              <a href="">
+              <a
+                onClick={() => navigate("/")}
+                className="select-none cursor-pointer"
+              >
                 <p>Kategori</p>
               </a>
               {user ? (
@@ -88,11 +91,11 @@ export default function NavbarLayout() {
     function DeskopView() {
       return (
         <div className="flex gap-4 w-[30%] items-center justify-end">
-          <a href="">
-            <h5
-              className="text-[#3ECF4C] font-semibold tracking-wide
-"
-            >
+          <a
+            onClick={() => navigate("/")}
+            className="select-none cursor-pointer"
+          >
+            <h5 className="text-[#3ECF4C] font-semibold tracking-wide">
               Kategori
             </h5>
           </a>
