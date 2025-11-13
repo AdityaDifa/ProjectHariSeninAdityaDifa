@@ -1,4 +1,4 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 type TCard = {
@@ -25,5 +25,32 @@ export async function fetchAllClass(){
         return classList as TCard[];
     }catch(error){
         throw error
+    }
+}
+
+export async function buyClassAPI(userUid:string|undefined, classId:string){
+    if (!userUid) {
+      alert("User belum login!")
+      return
+    }
+    try{
+    // 🔍 Langsung ambil dokumen dengan id = classId
+    const classRef = doc(db, "users", userUid, "purchasedClasses", classId);
+    const classSnap = await getDoc(classRef);
+
+    if (classSnap.exists()) {
+      alert("You already purchased this class");
+      return;
+    }
+
+    // 💾 Tambahkan dokumen baru dengan nama = classId
+    await setDoc(classRef, {
+      classId, // bisa simpan juga di field kalau mau
+      purchased_date: new Date(),
+    });
+
+    alert(`Success purchased class ${classId}`);
+    }catch(error){
+        alert(error)
     }
 }

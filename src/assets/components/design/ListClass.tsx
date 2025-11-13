@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import fullStarIcon from "../../images/icons/star icon/star.png";
 import halfStarIcon from "../../images/icons/star icon/half-star.png";
 import blankStarIcon from "../../images/icons/star icon/no-star.png";
-import { fetchAllClass } from "../../services/api/classesAPI";
+import { buyClassAPI, fetchAllClass } from "../../services/api/classesAPI";
 
 type TCard = {
   id: string;
@@ -17,7 +17,13 @@ type TCard = {
   price: number;
   category?: string;
 };
-export default function ListClass({ category }: { category: any }) {
+export default function ListClass({
+  category,
+  userUid,
+}: {
+  category: any;
+  userUid: string | undefined;
+}) {
   const [lists, setLists] = useState<TCard[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -84,10 +90,21 @@ export default function ListClass({ category }: { category: any }) {
       );
     }
 
+    function buyClass(userUid: string, idClass: string) {
+      buyClassAPI(userUid, idClass);
+    }
+
     return (
       <div
         id={id}
-        className="h-full bg-white rounded-[10px] p-4 md:p-5 gap-2 md:gap-4 flex flex-col justify-between"
+        className="h-full bg-white rounded-[10px] p-4 md:p-5 gap-2 md:gap-4 flex flex-col justify-between hover:bg-gray-300"
+        onClick={() => {
+          if (!userUid) {
+            alert("Kamu harus login dulu sebelum beli kelas!");
+            return;
+          }
+          buyClass(userUid, id);
+        }}
       >
         <div className="flex gap-3 md:flex-col h-full">
           <div
