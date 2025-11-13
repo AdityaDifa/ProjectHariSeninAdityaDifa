@@ -3,9 +3,9 @@ import logo from "../../images/Logo.png";
 import { useEffect, useState } from "react";
 import dropdownIcon from "../../images/icons/dropdown-icon.png";
 import AuthButton from "../../components/buttons/AuthButton";
-import { useAuth } from "../../contexts/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/firebase/firebase";
+import useAuthStore from "../../store/useAuthStore";
 
 export default function NavbarLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -16,9 +16,7 @@ export default function NavbarLayout() {
   );
   const [toggleMenu, setToggleMenu] = useState(false);
 
-  const { imageUrl, isGoogleAccount } = useAuth();
-
-  const { user } = useAuth();
+  const { user, imageUrl, isGoogleAccount } = useAuthStore();
 
   useEffect(() => {
     const checkPage = () => {

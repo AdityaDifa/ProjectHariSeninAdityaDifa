@@ -13,9 +13,9 @@ import InputAccoutComponent from "../components/inputs/InputAccountComponent";
 import InputTelpFlagComponent from "../components/inputs/InputTelpFlagComponent";
 import InputGenderComponent from "../components/inputs/InputGenderComponent";
 import AuthButton from "../components/buttons/AuthButton";
-import { useAuth } from "../contexts/AuthContext";
 import { updateAccountProfile } from "../services/auth/auth";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
 
 type TButtonMenu = {
   id: string;
@@ -56,7 +56,7 @@ export default function ProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
 
-  const { imageUrl, isGoogleAccount } = useAuth();
+  const { imageUrl, isGoogleAccount } = useAuthStore();
 
   const navigate = useNavigate();
 
