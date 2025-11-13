@@ -133,3 +133,8 @@ export async function sendImagePicture(){
   const imageProfilePicture = user?.photoURL ?? ""
   return imageProfilePicture
 }
+
+export async function getIdUser(){
+  const user = auth.currentUser
+  console.log(user)
+}

@@ -9,10 +9,13 @@ import ListClass from "../components/design/ListClass";
 import ScrollCategories from "../components/design/ScrollCategories";
 import board_2 from "../images/background-images/board-2.jpg";
 import FooterLayout from "../layouts/features/FooterLayout";
+import useAuthStore from "../store/useAuthStore";
 
 export default function DashboardPage() {
+  const { user } = useAuthStore();
   const [category, setCategories] = useState("Semua Kelas");
   const navigate = useNavigate();
+  const userUid = user?.uid;
   return (
     <>
       <NavbarLayout />
@@ -43,7 +46,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <ScrollCategories category={category} setCategories={setCategories} />
-        <ListClass category={category} />
+        <ListClass category={category} userUid={userUid} />
         <BoardInformation sourceImage={board_2}>
           <div className="flex flex-col items-center justify-center gap-4 text-center md:w-[50%]">
             <h5 className="text-white">News Letter</h5>
