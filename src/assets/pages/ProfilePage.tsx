@@ -16,11 +16,25 @@ import AuthButton from "../components/buttons/AuthButton";
 import { updateAccountProfile } from "../services/auth/auth";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
+import { fetchAllClass, getPurchasedClasses } from "../services/api/classesAPI";
 
 type TButtonMenu = {
   id: string;
   label: string;
   icon: IconType; // tipe dari React Icons
+};
+
+type TCard = {
+  id: string;
+  title: string;
+  desc: string;
+  mentorName: string;
+  mentorJob: string;
+  jobPlace: string;
+  rating: number;
+  voters: number;
+  price: number;
+  category?: string;
 };
 
 const buttonStyle = {
@@ -59,6 +73,23 @@ export default function ProfilePage() {
   const { imageUrl, isGoogleAccount } = useAuthStore();
 
   const navigate = useNavigate();
+
+  const { user } = useAuthStore();
+  const userUid = user?.uid;
+
+  const [PurchasedClasses, setPurchasedClasses] = useState<any[]>();
+  const [listClasses, setListClasses] = useState<TCard[]>([]);
+
+  useEffect(() => {
+    const fetchAllClassData = async () => {
+      const dataPurchased = await getPurchasedClasses(userUid);
+      setPurchasedClasses(dataPurchased);
+
+      const classes = await fetchAllClass();
+      setListClasses(classes);
+    };
+    fetchAllClassData();
+  }, []);
 
   useEffect(() => {
     const auth = getAuth();
@@ -149,6 +180,39 @@ export default function ProfilePage() {
       </button>
     );
   }
+
+  function ListPurchasedClasses() {
+    const mergedData = PurchasedClasses!.map((purchased) => {
+      const found = listClasses.find((cls) => cls.id === purchased.id);
+      return { ...purchased, ...found };
+    });
+    console.log(mergedData);
+    return (
+      <>
+        {mergedData.map((data) => {
+          const timestamp = data.purchased_date;
+          const date = timestamp.toDate();
+          console.log(date.toLocaleDateString("id-ID"));
+          return (
+            <div
+              className="border border-[#3A35411F] p-1 flex flex-col gap-1"
+              key={data.id}
+            >
+              <h5 className="font-bold">{data.id}</h5>
+              <p>deskripsi : {data.desc}</p>
+              <p>
+                purchased : {date.toLocaleDateString("id-ID")}{" "}
+                {date.toLocaleTimeString("id-ID")}
+              </p>
+              <button className="p-1 border border-red-600 bg-red-500 text-white rounded-sm md:w-[30%]">
+                Refund
+              </button>
+            </div>
+          );
+        })}
+      </>
+    );
+  }
   return (
     <>
       <NavbarLayout />
@@ -172,101 +236,107 @@ export default function ProfilePage() {
             </div>
           </div>
           <div className="w-full border-[#3A35411F] border bg-white p-6 rounded-[10px] gap-6">
-            <div className="flex gap-3.5 items-center">
-              <img
-                src={
-                  isGoogleAccount
-                    ? imageUrl
-                    : "https://avatar.iran.liara.run/public"
-                }
-                className="w-10 h-10 md:w-[92px] md:h-[92px] flex-nowrap"
-              />
-              <div>
-                <h5 className="font-bold text-[16px] md:text-[20px]">
-                  {userData?.fullName}
-                </h5>
-                <p className="text-[#222325] text-[16px] md:text-[18px]">
-                  {userData?.email}
-                </p>
-                <a
-                  href=""
-                  className="text-[#F64920] font-bold text-[14px] md:text-[16px]"
-                >
-                  Ganti Foto Profil
-                </a>
-              </div>
-            </div>
-            <div className="border-t border-[#F1F1F1] flex w-full my-2"></div>
-            <form
-              className="grid md:grid-cols-3 py-3 gap-4"
-              onSubmit={submitEditProfile}
-            >
-              <InputAccoutComponent
-                id="fullName"
-                type="string"
-                label={"Nama Lengkap"}
-                value={fullName ?? ""}
-                setValue={setFullName}
-              />
-              {!isGoogleAccount && (
-                <>
-                  {" "}
-                  <InputAccoutComponent
-                    id="email"
-                    type="string"
-                    label={"E-Mail"}
-                    value={email ?? ""}
-                    setValue={setEmail}
-                    disabled={true}
+            {menu === "profile" && (
+              <>
+                <div className="flex gap-3.5 items-center ">
+                  <img
+                    src={
+                      isGoogleAccount
+                        ? imageUrl
+                        : "https://avatar.iran.liara.run/public"
+                    }
+                    className="w-10 h-10 md:w-[92px] md:h-[92px] flex-nowrap"
                   />
-                  <div className="flex">
-                    <div className="basis-1/3 border border-[#3A35411F] rounded-[10px] focus:border-[#3ECF4C] focus:outline-none">
-                      <InputTelpFlagComponent
-                        id="phoneFlag"
-                        value={flag}
-                        setValue={setFlag}
-                      />
-                    </div>
-                    <div className="basis-2/3">
-                      <InputAccoutComponent
-                        id="phoneNumber"
-                        type="string"
-                        label={"No. Hp"}
-                        value={phoneNumber}
-                        setValue={setPhoneNumber}
-                      />
-                    </div>
+                  <div>
+                    <h5 className="font-bold text-[16px] md:text-[20px]">
+                      {userData?.fullName}
+                    </h5>
+                    <p className="text-[#222325] text-[16px] md:text-[18px]">
+                      {userData?.email}
+                    </p>
+                    <a
+                      href=""
+                      className="text-[#F64920] font-bold text-[14px] md:text-[16px]"
+                    >
+                      Ganti Foto Profil
+                    </a>
                   </div>
-                  <InputGenderComponent
-                    id="gender"
-                    value={gender}
-                    setValue={setGender}
-                  />
+                </div>
+                <div className="border-t border-[#F1F1F1] flex w-full my-2"></div>
+                <form
+                  className="grid md:grid-cols-3 py-3 gap-4"
+                  onSubmit={submitEditProfile}
+                >
                   <InputAccoutComponent
-                    type="password"
-                    label="Password Lama"
-                    id="oldPassword"
-                    value={oldPassword}
-                    setValue={setOldPassword}
+                    id="fullName"
+                    type="string"
+                    label={"Nama Lengkap"}
+                    value={fullName ?? ""}
+                    setValue={setFullName}
                   />
-                  <InputAccoutComponent
-                    type="password"
-                    label="Password"
-                    id="password"
-                    value={password}
-                    setValue={setPassword}
-                  />
-                  <InputAccoutComponent
-                    type="password"
-                    label="Konfirmasi Password"
-                    id="confirmPassword"
-                    value={confirmPassword}
-                    setValue={setConfirmPassword}
-                  />
-                </>
-              )}
-              <AuthButton label="Simpan" theme="primary" type="submit" />
-            </form>
+                  {!isGoogleAccount && (
+                    <>
+                      {" "}
+                      <InputAccoutComponent
+                        id="email"
+                        type="string"
+                        label={"E-Mail"}
+                        value={email ?? ""}
+                        setValue={setEmail}
+                        disabled={true}
+                      />
+                      <div className="flex">
+                        <div className="basis-1/3 border border-[#3A35411F] rounded-[10px] focus:border-[#3ECF4C] focus:outline-none">
+                          <InputTelpFlagComponent
+                            id="phoneFlag"
+                            value={flag}
+                            setValue={setFlag}
+                          />
+                        </div>
+                        <div className="basis-2/3">
+                          <InputAccoutComponent
+                            id="phoneNumber"
+                            type="string"
+                            label={"No. Hp"}
+                            value={phoneNumber}
+                            setValue={setPhoneNumber}
+                          />
+                        </div>
+                      </div>
+                      <InputGenderComponent
+                        id="gender"
+                        value={gender}
+                        setValue={setGender}
+                      />
+                      <InputAccoutComponent
+                        type="password"
+                        label="Password Lama"
+                        id="oldPassword"
+                        value={oldPassword}
+                        setValue={setOldPassword}
+                      />
+                      <InputAccoutComponent
+                        type="password"
+                        label="Password"
+                        id="password"
+                        value={password}
+                        setValue={setPassword}
+                      />
+                      <InputAccoutComponent
+                        type="password"
+                        label="Konfirmasi Password"
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        setValue={setConfirmPassword}
+                      />
+                    </>
+                  )}
+                  <AuthButton label="Simpan" theme="primary" type="submit" />
+                </form>
+              </>
+            )}
+            {menu === "classes" && <ListPurchasedClasses />}
+            {menu === "history" && <p>history</p>}
           </div>
         </div>
       </DashboardLayout>

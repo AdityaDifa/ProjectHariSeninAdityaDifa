@@ -54,3 +54,25 @@ export async function buyClassAPI(userUid:string|undefined, classId:string){
         alert(error)
     }
 }
+export async function getPurchasedClasses(userUid: string | undefined) {
+  if (!userUid) {
+    alert("User belum login!");
+    return [];
+  }
+
+  try {
+    const purchasedClassesRef = collection(db, "users", userUid, "purchasedClasses");
+    const snapshot = await getDocs(purchasedClassesRef);
+
+    // ubah jadi array of data
+    const purchased = snapshot.docs.map((doc) => ({
+      id: doc.id,          // ini classId
+      ...doc.data(),       // misalnya purchased_date, dsb
+    }));
+    
+    return purchased;
+  } catch (error) {
+    console.error("Error getting purchased classes:", error);
+    return [];
+  }
+}
